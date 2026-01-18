@@ -1,7 +1,7 @@
 package test;
 
 import java.util.HashMap;
-import java.util.Collections;
+import java.util.Collection;
 
 public class TopicManagerSingleton {
 
@@ -14,9 +14,9 @@ public class TopicManagerSingleton {
         }
 
         //returns the name's corresponding topic using a hash map. If it doesn't exist - create it in the hashmap.
-        public HashMap<String,Topic> getTopic(String name) {
+        public Topic getTopic(String name) {
             //if name doesn't exists - create it and insert into hashmap
-            if(!topics.get(name)) {
+            if(!topics.containsKey(name)) {
                 Topic newTopic = new Topic(name);
                 topics.put(name, newTopic);
             }
@@ -25,8 +25,7 @@ public class TopicManagerSingleton {
 
         //returns a collection of all the topics in the hashmap.
         public Collection<Topic> getTopics() {
-           Collection<Topic> collectionTopic = topics.values();
-           return collectionTopic;
+           return topics.values();
         }
 
         //clears the map

@@ -1,12 +1,13 @@
-package project_biu.graph;
+package test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Topic {
     public final String name;
-    List<Agent> subs = new ArrayList<>(); //subscribers
-    List<Agent> pubs = new ArrayList<>(); //publishers
+    public List<Agent> subs = new ArrayList<>(); //subscribers
+    public List<Agent> pubs = new ArrayList<>(); //publishers
 
     //CTOR
     Topic(String name) {
@@ -30,7 +31,7 @@ public class Topic {
     //Execute callback() function for all the subscribers.
     public void publish(Message m){
         for(int i=0; i< subs.size(); i++) {
-            subs.get(i).callback(this, m);
+            subs.get(i).callback(this.name, m);
         }
     }
 

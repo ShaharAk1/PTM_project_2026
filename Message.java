@@ -1,11 +1,13 @@
 package test;
 
 import java.util.Date;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 public class Message {
     Calendar calendar = Calendar.getInstance();
-    
     public final byte[] data;
     public final String asText;
     public final double asDouble;
@@ -17,22 +19,21 @@ public class Message {
 
         this.data = this.asText.getBytes();
         //Try to convert to double
+        double tempDouble;
         try {
-            this.asDouble = Double.parseDouble(asText);
+            tempDouble = Double.parseDouble(asText);
         } catch (NumberFormatException e){
-            this.asDouble = Double.NaN;
+            tempDouble = Double.NaN;
             System.err.println("The given string cannot be converted to Double.");
         }
+        this.asDouble = tempDouble;
     }
 
     public Message(byte[] data) {
-        this.data = Arrays.copyOf(data, data.length);
-        String str = new String(data, StandardCharsets.UTF_8);
-        Message(str);
+        this(new String(data,StandardCharsets.UTF_8));
     }
     public Message(double doub) {
-        String str = String.valueOf(doub);
-        Message(str);
+        this(String.valueOf(doub));
     }
 
 
