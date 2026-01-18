@@ -4,10 +4,12 @@ import java.util.Date;
 import java.util.Arrays;
 
 public class Message {
+    Calendar calendar = Calendar.getInstance();
+    
     public final byte[] data;
     public final String asText;
     public final double asDouble;
-    public final Date date;
+    public final Date date = calendar.getTime();
     
     //3 CTORs for each input. converts the input to match the other variables.
     public Message(String str) {
@@ -21,9 +23,6 @@ public class Message {
             this.asDouble = Double.NaN;
             System.err.println("The given string cannot be converted to Double.");
         }
-
-        Calendar calendar = Calendar.getInstance();
-        this.date = calendar.getTime();
     }
 
     public Message(byte[] data) {
