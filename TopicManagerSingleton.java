@@ -15,7 +15,7 @@ public class TopicManagerSingleton {
 
         //returns the name's corresponding topic using a hash map. If it doesn't exist - create it in the hashmap.
         public Topic getTopic(String name) {
-            //if name doesn't exists - create it and insert into hashmap
+            //if name doesn't exist - create it and insert into hashmap
             if(!topics.containsKey(name)) {
                 Topic newTopic = new Topic(name);
                 topics.put(name, newTopic);

@@ -1,32 +1,23 @@
 package test;
 
-import java.util.function.BinaryOperator;
-
 import test.TopicManagerSingleton.TopicManager;
 
-public class BinOpAgent implements Agent{
-    public String agentName = null;
-    public String topicInp1 = null;
-    public String topicInp2 = null;
-    public String topicOutput = null;
-    public BinaryOperator<Double> operator;
+public class PlusAgent implements Agent{
+    public double x = 0;
+    public double y = 0;
 
-    double val1 = 0.0 ,val2 = 0.0;
-
-    //CTOR
-    public BinOpAgent(String agent, String inp1, String inp2, String out ,BinaryOperator<Double> op) {
-        this.agentName = agent;
-        this.topicInp1 = inp1;
-        this.topicInp2 = inp2;
-        this.topicOutput = out;
-        this.operator = op;
-
+    public PlusAgent(String[] subs, String[] pubs) {
         TopicManager tm = TopicManagerSingleton.get();
-        tm.getTopic(inp1).subscribe(this);
-        tm.getTopic(inp2).subscribe(this);
-        tm.getTopic(out).addPublisher(this);
+        top1 = tm.getTopic(subs[0]);
+        top2 = tm.getTopic(subs[1]);
+
+        Agent agent = new Agent();
+        top1.subscribe(agent);
+        top2.subscribe(agent);
     }
 
+    
+    //TODO - this part
     //implementation of Agent
 
     @Override
@@ -36,8 +27,8 @@ public class BinOpAgent implements Agent{
 
     @Override
     public void reset() {
-        this.val1 = 0.0;
-        this.val2 = 0.0;
+        this.x = 0.0;
+        this.y = 0.0;
     }
 
     @Override
