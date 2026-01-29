@@ -8,12 +8,21 @@ public class PlusAgent implements Agent{
 
     public PlusAgent(String[] subs, String[] pubs) {
         TopicManager tm = TopicManagerSingleton.get();
-        top1 = tm.getTopic(subs[0]);
-        top2 = tm.getTopic(subs[1]);
+        Topic top1 = tm.getTopic(subs[0]);
+        Topic top2 = tm.getTopic(subs[1]);
+        Topic pubTop = tm.getTopic(pubs[0]);
 
         Agent agent = new Agent();
         top1.subscribe(agent);
         top2.subscribe(agent);
+
+        //publish x+y
+        pubTop.addPublisher(agent);
+        if(x instance of double && y instance of double)
+            pubTop.publish(x+y);
+        else
+            throw new
+        
     }
 
     
