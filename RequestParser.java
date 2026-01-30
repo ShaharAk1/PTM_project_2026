@@ -3,6 +3,7 @@ package test;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +12,11 @@ public class RequestParser {
 
     public static RequestInfo parseRequest(BufferedReader reader) throws IOException {
 		//create a RequestInfo variable using the BufferedReader we got
-        String request = reader.readLine(); //"GET /api/resource?id=123&name=test HTTP/1.1"
-        String[] reqInfoArray = request.split(" "); // ["GET", "/api/resource?id=123&name=test", "HTTP/1.1"]
+        String firstLine = reader.readLine();
+        if (firstLine == null || firstLine.isEmpty()) {
+            return new RequestInfo("", "", new String[0], new HashMap<>(), new byte[0]);
+        }
+        String[] reqInfoArray = firstLine.split(" "); // ["GET", "/api/resource?id=123&name=test", "HTTP/1.1"]
 
         String uri = reqInfoArray[1];
 
@@ -44,42 +48,41 @@ public class RequestParser {
             }
         }
 
-
-        //find content length
-        int contentLength = 0;
-        String line;
-        while ((line = reader.readLine()) != null && !line.isEmpty()) {
-            if (line.toLowerCase().startsWith("Content-Length:")) {
-                contentLength = Integer.parseInt(line.split(":")[1].trim());
-            }
+        String line = reader.readLine();
+        while (line != null && !line.isEmpty()) {
+            line = reader.readLine();
+        }
+        if (!reader.ready()) {
+            return new RequestInfo(reqInfoArray[0], uri, uriSegments, params, new byte[0]);
         }
 
-
-
-
-        //skip empty lines
-        while ((line = reader.readLine()) != null && line.isEmpty()) { }
-
-        //if the line has = add to parameters
-        if (line != null && line.contains("=")) {
-            int eqIndex = line.indexOf("=");
-            params.put(line.substring(0, eqIndex), line.substring(eqIndex + 1));
-
+        line = reader.readLine();
+        while (line != null && !line.isEmpty()) {
+            int eq = line.indexOf("=");
+            if (eq != -1) {
+                params.put(line.substring(0, eq).trim(), line.substring(eq + 1).trim());
+            }
+            if (!reader.ready()) {
+                return new RequestInfo(reqInfoArray[0], uri, uriSegments, params, new byte[0]);
+            }
             line = reader.readLine();
         }
 
-        //content
-        String line1 = reader.readLine();
-        byte[] bodyBytes;
-        if (line1 != null) {
-            bodyBytes = (line1 + "\n").getBytes("UTF-8");
-        } else {
-            bodyBytes = new byte[0];
+        if (!reader.ready()) {
+            return new RequestInfo(reqInfoArray[0], uri, uriSegments, params, new byte[0]);
         }
 
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        line = reader.readLine();
+        while (line != null && !line.isEmpty()) {
+            out.write(line.getBytes(StandardCharsets.UTF_8));
+            out.write('\n');
+            if (!reader.ready()) break;
+            line = reader.readLine();
+        }
 
-        //RequestInfo
-        return new RequestInfo(reqInfoArray[0], uri, uriSegments, params, bodyBytes);
+        byte[] content = out.toByteArray();
+        return new RequestInfo(reqInfoArray[0], uri, uriSegments, params, content);
     }
 	
 	// RequestInfo given internal class
