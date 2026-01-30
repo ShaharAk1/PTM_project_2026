@@ -4,7 +4,7 @@ import java.util.function.BinaryOperator;
 
 import test.TopicManagerSingleton.TopicManager;
 
-public class BinOpAgent implements Agent{
+public class BinOpAgent implements Agent {
     public String agentName = null;
     public String topicInp1 = null;
     public String topicInp2 = null;

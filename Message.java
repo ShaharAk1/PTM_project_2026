@@ -2,8 +2,6 @@ package test;
 
 import java.util.Date;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Arrays;
 import java.nio.charset.StandardCharsets;
 
 public class Message {

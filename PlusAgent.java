@@ -2,64 +2,63 @@ package test;
 
 import test.TopicManagerSingleton.TopicManager;
 
-public class PlusAgent implements Agent{
-    public double x = 0;
-    public double y = 0;
+public class PlusAgent implements Agent {
+    double x;
+    double y;
+    boolean hasX = false;
+    boolean hasY = false;
+    Topic pubTop;
+    String topicX = "" + 0;
+    String topicY= "" + 0;
 
     public PlusAgent(String[] subs, String[] pubs) {
         TopicManager tm = TopicManagerSingleton.get();
-        Topic top1 = tm.getTopic(subs[0]);
-        Topic top2 = tm.getTopic(subs[1]);
-        Topic pubTop = tm.getTopic(pubs[0]);
 
-        Agent agent = new Agent();
-        top1.subscribe(agent);
-        top2.subscribe(agent);
+        topicX = subs[0];
+        topicY = subs[1];
 
-        //publish x+y
-        pubTop.addPublisher(agent);
-        if(x instance of double && y instance of double)
-            pubTop.publish(x+y);
-        else
-            throw new
-        
-    }
+        Topic top1 = tm.getTopic(topicX);
+        Topic top2 = tm.getTopic(topicY);
+        pubTop = tm.getTopic(pubs[0]);
 
-    
-    //TODO - this part
-    //implementation of Agent
+        top1.subscribe(this);
+        top2.subscribe(this);
 
-    @Override
-    public String getName() {
-        return agentName;
-    }
-
-    @Override
-    public void reset() {
-        this.x = 0.0;
-        this.y = 0.0;
+        pubTop.addPublisher(this);
     }
 
     @Override
     public void callback(String topic, Message msg) {
-        //set val1 and val2 to topic message as double
-        if (topic.equals(this.topicInp1)) {
-            val1 = msg.asDouble;
-        } else if (topic.equals(this.topicInp2)) {
-            val2 = msg.asDouble;
+
+        double value = msg.asDouble; //get double value of the message
+
+        if (topic.equals(topicX)) {
+            x = value;
+            hasX = true;
+        } else if (topic.equals(topicY)) {
+            y = value;
+            hasY = true;
         }
 
-        //if values are valid save result (after applying lambda operator)
-        if(!Double.isNaN(val1) && !Double.isNaN(val2)){
-            double result = this.operator.apply(val1, val2);
-            //publish to output topic
-            TopicManagerSingleton.get().getTopic(topicOutput).publish(new Message(result));
+        if (hasX && hasY) {
+            pubTop.publish(new Message(x + y));
         }
+    }
+    @Override
+    public String getName() {
+        return "PlusAgent";
+    }
 
+    @Override
+    public void reset() {
+        hasX = false;
+        hasY = false;
+        x = 0;
+        y = 0;
     }
 
     @Override
     public void close() {
-
+        reset();
     }
 }
